@@ -17,7 +17,7 @@ jobs:
             ls -l | grep /app
         
       - name: Clone project
-        uses: actions/checkout@v7
+        uses: actions/checkout@master
 
       - name : Build docker image
         run: docker build -t react-app:latest .
