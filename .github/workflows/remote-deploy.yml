@@ -1,8 +1,8 @@
 name: Deploy to Remote Server
 on: [push]
 jobs:
-  build:
-    name: Build
+  deploy-project:
+    name: Deploy project
     runs-on: ubuntu-latest
     steps:
       - name: Execute remote SSH commands using password
@@ -11,11 +11,11 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SECRET }}
-        #   port: ${{ secrets.PORT }}
+          port: 22
           script: |
             mkdir -p /app
             ls -l | grep /app
-
+        
       - name: Clone project
         uses: actions/checkout@v7
 
