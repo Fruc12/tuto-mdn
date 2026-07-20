@@ -1,29 +1,37 @@
-name: Deploy to Remote Server
-on: [push]
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
 jobs:
-  deploy-project:
-    name: Deploy project
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Execute remote SSH commands using key
-        uses: appleboy/ssh-action@v1.0.3
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Copy project to server
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SECRET }}
-          port: 22
+          source: "."
+          target: "/app"
+
+      - name: Deploy on server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SECRET }}
           script: |
-            mkdir -p /app
-            ls -l
-        
-      - name: Clone project
-        uses: actions/checkout@master
-
-      - name : Build docker image
-        run: docker build -t react-app:latest .
-
-      - name : Run docker image
-        run: docker run -d -p 5173:3000 react-app:latest
-
-      - name: Verify deployment
-        run: curl -I http://localhost:5173
+            cd /app
+            docker stop react-app || true
+            docker rm react-app || true
+            docker build -t react-app .
+            docker run -d --name react-app -p 5173:3000 --restart unless-stopped react-app
+            docker ps
