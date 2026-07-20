@@ -10,7 +10,7 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
-          password: ${{ secrets.SECRET }}
+          key: ${{ secrets.SECRET }}
         #   port: ${{ secrets.PORT }}
           script: |
             mkdir -p /app
