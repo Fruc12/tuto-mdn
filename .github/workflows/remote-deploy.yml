@@ -25,4 +25,7 @@ jobs:
         run: docker build -t react-app:latest .
 
       - name : Run docker image
-        run: docker run -d --rm -p 80:3000 react-app:latest
+        run: docker run -d -p 5173:3000 react-app:latest
+
+      - name: Verify deployment
+        run: curl -I http://localhost:5173
